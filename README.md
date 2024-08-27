@@ -10,3 +10,11 @@ Se você deseja contribuir com o projeto, siga estes passos:
 3. Faça as alterações desejadas e commit (`git commit -am 'feat: Adicionando nova funcionalidade'`).
 4. Faça push para a branch (`git push origin minha-contribuicao`).
 5. Abra um pull request explicando suas alterações.
+
+## **⚙️ Tecnologias**
+
+- Linguagens: Python.
+- Banco de dados relacional : (`MySQL`).
+- Banco de dados NoSQL : (`A definir`).
+- Framework (`Sreamlit`).
+- PS: Todas as dependencias podem ser instaladas por meio do arquivo (`Requirements.txt`) .
