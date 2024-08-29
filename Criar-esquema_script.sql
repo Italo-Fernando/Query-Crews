@@ -10,7 +10,7 @@ categoria int,
 duraco int not null,
 foreign key (categoria) references categoria  (id_categoria)
 );
-
+#Só to testando, foi mal se der errado
 create table canal (num_canal int primary key,
 nome varchar(50),
 sigla varchar(25));
