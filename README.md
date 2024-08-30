@@ -18,3 +18,4 @@ Se você deseja contribuir com o projeto, siga estes passos:
 - Banco de dados NoSQL : (`Supabase`).
 - Framework (`Sreamlit`).
 - PS: Todas as dependencias podem ser instaladas por meio do arquivo (`Requirements.txt`) .
+- Comando : (`pip install -r requirements.txt --upgrade`)
