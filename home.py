@@ -1,5 +1,3 @@
-import streamlit as st
-
 # Importar o Streamlit e outros módulos necessários
 import streamlit as st
 
