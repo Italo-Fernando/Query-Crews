@@ -1,29 +1,73 @@
-create schema Cinema_filmes;
-use Cinema_filmes;
+CREATE SCHEMA Cinema_filmes;
+USE Cinema_filmes;
 
-create table filme (num_filme int primary key,
-título_original varchar(80) not null,
-título_brasil varchar(80),
-ano_lancamento year not null,
-país_origem varchar(30),
-categoria int,
-duraco int not null,
-foreign key (categoria) references categoria  (id_categoria)
+CREATE TABLE diretor (
+    id_diretor INT AUTO_INCREMENT PRIMARY KEY,
+    nome_diretor VARCHAR(40) not null
 );
 
-create table canal (num_canal int primary key,
-nome varchar(50),
-sigla varchar(25));
+CREATE TABLE categoria (
+    id_categoria INT AUTO_INCREMENT PRIMARY KEY,
+    nome_categoria VARCHAR(30) NOT NULL
+);
 
-create table exibicao
-(num_filme int,
-num_canal int,
-data datetime,
-primary key (num_filme, num_canal, data),
-foreign key (num_filme) references filme (num_filme),
-foreign key (num_canal) references canal (num_canal));
+CREATE TABLE filme (
+    num_filme INT PRIMARY KEY,
+    título_original VARCHAR(80) NOT NULL,
+    título_brasil VARCHAR(80),
+    ano_lancamento YEAR NOT NULL,
+    país_origem VARCHAR(30),
+    categoria INT,
+    duraco INT NOT NULL,
+    id_diretor INT NOT NULL,
+    FOREIGN KEY (id_diretor) REFERENCES diretor (id_diretor),
+    FOREIGN KEY (categoria) REFERENCES categoria (id_categoria)
+);
 
-create table categoria (
-id_categoria int AUTO_INCREMENT primary key ,
-nome_categoria varchar(30) not null
-)
+CREATE TABLE canal (
+    num_canal INT PRIMARY KEY,
+    nome VARCHAR(50),
+    sigla VARCHAR(25)
+);
+
+CREATE TABLE exibicao (
+    num_filme INT,
+    num_canal INT,
+    data DATETIME,
+    PRIMARY KEY (num_filme, num_canal, data),
+    FOREIGN KEY (num_filme) REFERENCES filme (num_filme),
+    FOREIGN KEY (num_canal) REFERENCES canal (num_canal)
+);
+
+CREATE TABLE custo_ganho (
+    num_filme INT,
+    bilheteria DECIMAL(12,2),
+    orcamento DECIMAL(12,2) not null,
+    FOREIGN KEY (num_filme) REFERENCES filme (num_filme)
+);
+
+CREATE TABLE premio (
+    id_premio INT AUTO_INCREMENT PRIMARY KEY,
+    premios VARCHAR(50) NOT NULL
+);
+
+CREATE TABLE premio_filme (
+    id_premio INT,
+    num_filme INT,
+    FOREIGN KEY (id_premio) REFERENCES premio (id_premio),
+    FOREIGN KEY (num_filme) REFERENCES filme (num_filme)
+);
+
+CREATE TABLE usuario (
+    id_usuario INT AUTO_INCREMENT PRIMARY KEY,
+    nome_usuario VARCHAR(50) NOT NULL,
+    email_usuario VARCHAR(50) NOT NULL
+);
+
+CREATE TABLE favoritos (
+    id_usuario INT,
+    num_filme INT,
+    starhate INT CHECK (starhate BETWEEN 0 AND 5),
+    FOREIGN KEY (id_usuario) REFERENCES usuario (id_usuario),
+    FOREIGN KEY (num_filme) REFERENCES filme (num_filme)
+);
