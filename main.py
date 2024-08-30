@@ -26,8 +26,17 @@ def main():
             print("Rodando tarefas iniciais no home.py...")
             subprocess.run(["streamlit", "run", "home.py"])
             
-    except mysql.connector.Error as e:
-        print(f"Erro ao conectar ao banco de dados: {e}")
+    except mysql.connector.Error as err:
+        if err.errno == mysql.connector.errorcode.ER_ACCESS_DENIED_ERROR:
+            print("Usuário ou senha inválidos!")      
+        elif err.errno == mysql.connector.errorcode.ER_BAD_DB_ERROR:
+            print("Banco de dados não existe!")
+        elif err.errno == mysql.connector.errorcode.CR_CONN_HOST_ERROR:
+            print("Host não encontrado!")
+        elif err.errno == mysql.connector.errorcode.CR_CONN_HOST_ERROR:
+            print("Porta inválida!")
+        else:
+            print(f"Erro ao conectar ao banco de dados: {err}")
 
 if __name__ == '__main__':
     main()
