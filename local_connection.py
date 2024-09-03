@@ -4,7 +4,7 @@ class Database_connection:
         self.__password = None  # Password object
         self.__host = None  # Host object
         self.__port = 3306  # Default MySQL port
-        self.database = None  # Database object
+        # self.database = None  # Database object
 
     def add_user(self):
         usuario = input("Digite o usuário da conexão: ")
@@ -27,7 +27,7 @@ class Database_connection:
             self.__port = int(porta)  # Converte para inteiro
         return self.__port
     
-    def add_database(self):
-        database = input("Digite o nome do banco de dados(Schema): ")
-        self.database = database
-        return self.database
+    # def add_database(self):
+    #     database = input("Digite o nome do banco de dados(Schema): ")
+    #     self.database = database
+    #     return self.database

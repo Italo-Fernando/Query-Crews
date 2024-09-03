@@ -1,4 +1,5 @@
 from local_connection import Database_connection
+from port_SQL_to_Python import criar_banco
 import mysql.connector
 import subprocess
 
@@ -8,22 +9,23 @@ def main():
     password = db.add_password()
     host = db.add_host()
     port = db.add_port()
-    database = db.add_database()
+    # database = db.add_database()
     
     config = {
         'user': user,
         'password': password,
         'host': host,
-        'port': port,
-        'database': database
+        'port': port
     }
 
     try:
         conexao = mysql.connector.connect(**config)
         if conexao.is_connected():
+            cursor = conexao.cursor()
             print("Conectado ao banco de dados com sucesso!")
-
             print("Rodando tarefas iniciais no home.py...")
+            criar_banco(conexao,cursor)
+            
             subprocess.run(["streamlit", "run", "home.py"])
             
     except mysql.connector.Error as err:
