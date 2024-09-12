@@ -1,3 +1,4 @@
+DROP SCHEMA IF EXISTS Cinema_filmes;
 CREATE SCHEMA Cinema_filmes;
 USE Cinema_filmes;
 
@@ -24,10 +25,11 @@ CREATE TABLE IF NOT EXISTS  premio (
 
 CREATE TABLE IF NOT EXISTS  filme (
     num_filme INT PRIMARY KEY,
-    título_original VARCHAR(80) NOT NULL,
-    título_brasil VARCHAR(80),
+    titulo_original VARCHAR(80) NOT NULL,
+    titulo_brasil VARCHAR(80),
     ano_lancamento YEAR NOT NULL,
-    país_origem VARCHAR(30),
+    poster_url VARCHAR(255),
+    pas_origem VARCHAR(30),
     duracao INT NOT NULL,
     id_diretor INT NOT NULL,
     class_indicativo VARCHAR(3),
@@ -111,8 +113,50 @@ INSERT INTO categoria (nome_categoria) VALUES
 ('Vampiro'), ('Monstros'), ('Antológico'), 
 ('Dança'), ('Aventura Espacial'), ('Natal'), 
 ('Cult'), ('Psicológico'), ('Social');
- 
- 
+
+INSERT INTO diretor (nome_diretor) VALUES
+('Steven Spielberg'), ('Martin Scorsese'), ('Quentin Tarantino'), 
+('Christopher Nolan'), ('David Fincher'), ('James Cameron'), 
+('Ridley Scott'), ('Tim Burton'), ('Peter Jackson'), 
+('Clint Eastwood'), ('Woody Allen'), ('Spike Lee'), 
+('Francis Ford Coppola'),('Francis Lawrence'), ('Alfred Hitchcock'), ('Stanley Kubrick'), 
+('George Lucas'), ('Robert Zemeckis'),('Zack Snyder'), ('Michael Bay'), 
+('Oliver Stone'), ('John Carpenter'), ('Brian De Palma'), 
+('Wes Craven'), ('John Hughes'), ('John Landis'), ('Joss Whedon'),
+('J.J. Abrams'), ('Sam Raimi'), ('Joel Coen'), ('Ethan Coen'), 
+('Paul Thomas Anderson'), ('David Lynch'), ('Darren Aronofsky'), 
+('Roman Polanski'), ('Pedro Almodóvar'), ('Lars von Trier'), 
+('Ingmar Bergman'), ('Federico Fellini'), ('Akira Kurosawa'), 
+('Hayao Miyazaki'), ('Sergio Leone'), ('Jean-Luc Godard'), 
+('François Truffaut'), ('Michelangelo Antonioni'), ('Bernardo Bertolucci'), 
+('Luchino Visconti'), ('Vittorio De Sica'), ('Roberto Rossellini'), 
+('Fritz Lang'), ('Billy Wilder'), ('John Huston'), ('Howard Hawks'), 
+('Orson Welles'), ('Frank Capra'), ('George Cukor'), ('William Wyler'), 
+('John Ford'), ('David Lean'), ('Michael Curtiz'), ('Victor Fleming'), 
+('Cecil B. DeMille'), ('King Vidor'), ('George Stevens'), ('Fred Zinnemann'), 
+('Elia Kazan'), ('Joseph L. Mankiewicz'), ('Vincente Minnelli'), ('Robert Wise'), 
+('Billy Wilder'), ('Delbert Mann'), ('Jerome Robbins'), ('Robert Wise'), 
+('Tony Richardson'), ('David Lean'), ('George Cukor'), ('Fred Zinnemann'), 
+('Mike Nichols'), ('Carol Reed'), ('John Schlesinger'), ('Franklin J. Schaffner'), 
+('William Friedkin'), ('Milos Forman'), ('Robert Redford'), ('Warren Beatty'), 
+('Richard Attenborough'), ('Sydney Pollack'), ('Oliver Stone'), ('Kevin Costner'), 
+('Jonathan Demme'), ('Clint Eastwood'), ('Mel Gibson'), ('Ron Howard'), 
+('Anthony Minghella'), ('Steven Spielberg'), ('Sam Mendes'), ('Steven Soderbergh'), 
+('Roman Polanski'), ('Peter Jackson'), ('Clint Eastwood'), ('Martin Scorsese'), 
+('Danny Boyle'), ('Kathryn Bigelow'), ('Tom Hooper'), ('Michel Hazanavicius'), 
+('Ang Lee'), ('Alfonso Cuarón'), ('Alejandro González Iñárritu'), ('Damien Chazelle'), 
+('Guillermo del Toro'), ('Bong Joon-ho'), ('Chloé Zhao'), ('Spike Lee'), 
+('David Lynch'), ('David Cronenberg'), ('David O. Russell'), ('David Ayer'), 
+('David Twohy'), ('David Gordon Green'), ('David Dobkin'), ('David Koepp'), 
+('David Mamet'), ('David Lean'), ('David Fincher'), ('David Zucker'), 
+('David Wain'), ('David Schwimmer'),
+('John McTiernan'), ('John Woo'), ('John Ford'), 
+('John Huston'), ('John Sturges'), ('John Frankenheimer'), 
+('John Schlesinger'), ('John Waters'), ('John Singleton'), 
+('John Sayles'), ('John Lasseter'), ('John Boorman'), 
+('John Milius'), ('John Badham'), ('John G. Avildsen'), 
+('John Glen');
+
  
 DELIMITER //
 CREATE TRIGGER checar_exibicao_antes_lancamento
