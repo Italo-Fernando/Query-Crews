@@ -1,5 +1,5 @@
 from local_connection import Database_connection
-from port_SQL_to_Python import criar_banco
+from port_SQL_to_Python import criar_banco, criar_triggers, popular_banco
 import mysql.connector
 import subprocess
 
@@ -17,7 +17,6 @@ def main():
         'host': host,
         'port': port
     }
-
     try:
         conexao = mysql.connector.connect(**config)
         if conexao.is_connected():
@@ -25,6 +24,9 @@ def main():
             print("Conectado ao banco de dados com sucesso!")
             print("Rodando tarefas iniciais no home.py...")
             criar_banco(conexao,cursor)
+            criar_triggers(conexao,cursor)
+            popular_banco(conexao,cursor)
+
             
             subprocess.run(["streamlit", "run", "home.py"])
             
