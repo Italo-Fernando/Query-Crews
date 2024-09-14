@@ -1,5 +1,21 @@
 from binascii import Error
 
+class alterar_banco:
+    def __init__(self, conexao, cursor):
+        self.conexao = conexao
+        self.cursor = cursor
+
+    def inserir(self):
+        pass
+
+    def deletar(self):
+        pass
+
+    def atualizar(self):
+        pass
+
+    def pesquisa(self):
+        pass
 
 def criar_banco(conexao,cursor):    
     with open("Criar-esquema_script.sql", 'r') as file: # Abrindo e lendo o arquivo SQL

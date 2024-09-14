@@ -1,5 +1,5 @@
 from local_connection import Database_connection
-from port_SQL_to_Python import criar_banco, criar_triggers, popular_banco
+from port_SQL_to_Python import criar_banco, criar_triggers, popular_banco, alterar_banco
 import mysql.connector
 import subprocess
 
@@ -26,10 +26,12 @@ def main():
             criar_banco(conexao,cursor)
             criar_triggers(conexao,cursor)
             popular_banco(conexao,cursor)
+            banco = alterar_banco(conexao, cursor)
 
             
             subprocess.run(["streamlit", "run", "home.py"])
-            
+            return banco
+        
     except mysql.connector.Error as err:
         if err.errno == mysql.connector.errorcode.ER_ACCESS_DENIED_ERROR:
             print("Usuário ou senha inválidos!")      
@@ -43,5 +45,5 @@ def main():
             print(f"Erro ao conectar ao banco de dados: {err}")
 
 if __name__ == '__main__':
-    main()
+    conexao_banco = main()
 
