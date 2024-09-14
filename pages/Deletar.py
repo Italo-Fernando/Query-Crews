@@ -1,5 +1,6 @@
 import streamlit as st
 from datetime import time
+from main import conexao_banco
 
 # Lista de canais de exemplo
 canais = ['SBT','Globo','Record','Band','RedeTV','Cultura','TVB','Futura','EI','Fox Sports','HBO','CNN','Disney','CN','NatGeo','Discovery','MTV','Nick','Telecine','History' ]
