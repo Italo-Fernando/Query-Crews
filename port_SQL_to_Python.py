@@ -18,7 +18,7 @@ class alterar_banco:
         pass
 
 def criar_banco(conexao,cursor):    
-    with open("Criar-esquema_script.sql", 'r') as file: # Abrindo e lendo o arquivo SQL
+    with open("sql/Criar-esquema_script.sql", 'r') as file: # Abrindo e lendo o arquivo SQL
         sql_script = file.read()
         for statement in sql_script.split(';'):
             if statement.strip():
@@ -82,7 +82,7 @@ def criar_triggers(conexao,cursor):
     conexao.commit()
 
 def popular_banco(conexao,cursor):
-    with open("popular-banco.sql", 'r') as file: # Abrindo e lendo o arquivo SQL
+    with open("sql/popular-banco.sql", 'r') as file: # Abrindo e lendo o arquivo SQL
         sql_script = file.read()
         for statement in sql_script.split(';'):
             if statement.strip():
