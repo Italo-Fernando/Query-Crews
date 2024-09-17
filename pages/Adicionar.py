@@ -1,19 +1,28 @@
 import streamlit as st
 import pandas as pd
-from main import db_manager  # Certifique-se de que o nome do arquivo está correto
-from home import getConexaoCursor
+import funcoes as f
 
-# Obtenha a conexão e o cursor
-conexao, cursor = getConexaoCursor()
 
-# Função para buscar diretores e retornar a lista em DataFrame
+with open('conexao.txt', 'r') as file:
+    user = file.readline().strip()
+    password = file.readline().strip()
+    host = file.readline().strip()
+    porta = file.readline().strip()
+
+banco_de_dados = f.database(user, password, host, porta)
+conexao, cursor = banco_de_dados.conectar()
+# conexao , cursor = banco_de_dados.conexao, banco_de_dados.cursor
+
+# # Obtenha a conexão e o cursor
+# conexao, cursor = getConexaoCursor()
+
+# # Função para buscar diretores e retornar a lista em DataFrame
 def selectDiretores():
-    cursor.execute("SELECT * FROM diretor")
-    diretores = cursor.fetchall()
-    diretores_list = pd.DataFrame(diretores, columns=[desc[0] for desc in cursor.description])
-    return diretores_list
+     cursor.execute("SELECT * FROM diretor")
+     diretores = cursor.fetchall()
+     diretores_list = pd.DataFrame(diretores, columns=[desc[0] for desc in cursor.description])
+     return diretores_list
 
-# Função para buscar categorias e retornar a lista em DataFrame
 def getCategorias():
     cursor.execute("SELECT * FROM categoria")
     categorias = cursor.fetchall()
@@ -28,7 +37,7 @@ def adicionar_filme(conexao):
     diretores_list = selectDiretores()
     categorias_list = getCategorias()
     
-    # Formulário para inserção de filme
+#     # Formulário para inserção de filme
     with st.form('adicionar_filme'):
         titulo_original = st.text_input('Título Original', max_chars=80)
         titulo_brasil = st.text_input('Título no Brasil (opcional)', max_chars=80)
@@ -75,5 +84,5 @@ def adicionar_filme(conexao):
         st.success('Filme e exibição cadastrados com sucesso!') 
 
 # Verifique se há uma conexão válida e chame a função de adicionar filme
-if conexao and cursor:
-    adicionar_filme(conexao)
+
+adicionar_filme(conexao)

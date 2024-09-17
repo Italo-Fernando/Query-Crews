@@ -2,7 +2,18 @@
 import streamlit as st
 import pandas as pd
 from components.components import card_component
-from main import main, getConexaoCursor
+import funcoes as f
+
+
+st.set_page_config(layout="wide")
+
+user = st.text_input('Usuário')
+password = st.text_input('Senha', type='password')
+host = st.text_input('Host')
+porta = st.text_input('Porta')
+banco_de_dados = f.database(user, password, host, porta)
+banco_de_dados.conexao_info()
+
 
 def selectFilmes():
     cursor.execute("SELECT * FROM filme")
@@ -13,28 +24,20 @@ def selectFilmes():
 
     st.dataframe(df)
 
-
-conexao, cursor = None, None
-
-st.set_page_config(layout="wide")
-
-# Cabeçalho principal com título e descrição
-st.title("🎥 **Query Crews - Guia de Filmes e Canais**")
-st.write("**Encontre facilmente os horários dos seus filmes favoritos nos canais disponíveis.**")
-st.divider()
-
-btnConectar = st.button("Criar banco de dados e popular com dados iniciais")
-if btnConectar:
-    main()
-
-conexao, cursor = getConexaoCursor()
-
-btnmostrarFilmes = st.button("Mostrar Filmes")
-if btnmostrarFilmes:
-    selectFilmes()
-
-
-cards = [
+if st.button('Conectar'):
+    banco_de_dados = f.database(user, password, host, porta)
+    try:
+        banco_de_dados.criar_conexao()
+        banco_de_dados.banco_setup()
+        conexao, cursor = banco_de_dados.conectar()
+        st.write('Banco de dados criado com sucesso!')
+        st.title("🎥 **Query Crews - Guia de Filmes e Canais**")
+        st.write("**Encontre facilmente os horários dos seus filmes favoritos nos canais disponíveis.**")
+        st.divider()
+        btnmostrarFilmes = st.button("Mostrar Filmes")
+        if btnmostrarFilmes:
+            selectFilmes()
+        cards = [
     {
         "title": "Avatar",
         "description": "A paraplegic marine dispatched to the moon Pandora on a unique mission becomes torn between following his orders and protecting the world he feels is his home.",
@@ -77,28 +80,28 @@ cards = [
         "logo_caption": "AXN<br>Domingo, 18:00h",
         "background_image": "https://images-na.ssl-images-amazon.com/images/M/MV5BMjA3NTEwOTMxMV5BMl5BanBnXkFtZTgwMjMyODgxMzE@._V1_SX1500_CR0,0,1500,999_AL_.jpg"
     }
-]
+        ]
+        item_selecionado = st.slider("Filmes da Semana", 0, len(cards) - 2, 0)
+        col1, col2 = st.columns(2)
+        with col1:
+            card_component(
+                title=cards[item_selecionado]["title"],
+                description=cards[item_selecionado]["description"],
+                logo_url=cards[item_selecionado]["logo_url"],
+                logo_caption=cards[item_selecionado]["logo_caption"],
+                background_image=cards[item_selecionado]["background_image"],
+                unique_id=f"card1_{item_selecionado}"  # Adicionando um identificador único
+            )
+        with col2:
+            card_component(
+                title=cards[item_selecionado + 1]["title"],
+                description=cards[item_selecionado + 1]["description"],
+                logo_url=cards[item_selecionado + 1]["logo_url"],
+                logo_caption=cards[item_selecionado + 1]["logo_caption"],
+                background_image=cards[item_selecionado + 1]["background_image"],
+                unique_id=f"card2_{item_selecionado + 1}"  # Adicionando um identificador único
+            )
 
-item_selecionado = st.slider("Filmes da Semana", 0, len(cards) - 2, 0)
-
-col1, col2 = st.columns(2)
-
-with col1:
-    card_component(
-        title=cards[item_selecionado]["title"],
-        description=cards[item_selecionado]["description"],
-        logo_url=cards[item_selecionado]["logo_url"],
-        logo_caption=cards[item_selecionado]["logo_caption"],
-        background_image=cards[item_selecionado]["background_image"],
-        unique_id=f"card1_{item_selecionado}"  # Adicionando um identificador único
-    )
-
-with col2:
-    card_component(
-        title=cards[item_selecionado + 1]["title"],
-        description=cards[item_selecionado + 1]["description"],
-        logo_url=cards[item_selecionado + 1]["logo_url"],
-        logo_caption=cards[item_selecionado + 1]["logo_caption"],
-        background_image=cards[item_selecionado + 1]["background_image"],
-        unique_id=f"card2_{item_selecionado + 1}"  # Adicionando um identificador único
-    )
+    except:  # Ajuste o tipo de exceção
+        st.write(f'Erro: ')
+        st.write('Verifique se o banco de dados está rodando e se as informações estão corretas.')
