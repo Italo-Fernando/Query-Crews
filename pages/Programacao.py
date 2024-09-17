@@ -1,5 +1,4 @@
 import streamlit as st
-from main import db_manager  # Certifique-se de que o nome do arquivo está correto
 from home import getConexaoCursor
 
 conexao, cursor = getConexaoCursor()

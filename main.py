@@ -1,5 +1,5 @@
 from local_connection import Database_connection
-from port_SQL_to_Python import criar_banco, criar_triggers, popular_banco
+from port_SQL_to_Python import criar_banco, criar_triggers, popular_banco, alterar_banco
 import mysql.connector
 
 class DatabaseManager:
