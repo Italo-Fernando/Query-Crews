@@ -75,6 +75,7 @@ class database:
                     END IF;
 
         END;'''
+        
         cursor.execute(trigger_1)
         cursor.execute(trigger2)
         conexao.commit()
@@ -83,17 +84,19 @@ class database:
     def popular_banco(self):
         conexao = self.conexao
         cursor = self.cursor
-        with open('scripts_SQL\Script_popular.sql', 'r') as file:
-            script = file.read()
-            for declaracao in script.split(';'):
-                if declaracao.strip():
-                    try:
-                        cursor.execute(declaracao)
-                        conexao.commit()
-                        
-                    except Exception as e:
-                        print(f'Erro: {e}')
-            return None
+        try:
+            with open('scripts_SQL/Script_popular.sql', 'r', encoding='utf-8') as file:
+                script = file.read()
+                for declaracao in script.split(';'):
+                    if declaracao.strip():
+                        try:
+                            cursor.execute(declaracao)
+                            conexao.commit()
+                        except Exception as e:
+                            print(f'Erro ao executar declaração: {e}')
+        except Exception as e:
+            print(f'Erro ao abrir o arquivo: {e}')
+        return None
         
     
 

@@ -1,8 +1,9 @@
 import streamlit as st
 import pandas as pd
 import funcoes as f
+from datetime import datetime
 
-
+# Conectar ao banco de dados
 with open('conexao.txt', 'r') as file:
     user = file.readline().strip()
     password = file.readline().strip()
@@ -11,66 +12,63 @@ with open('conexao.txt', 'r') as file:
 
 banco_de_dados = f.database(user, password, host, porta)
 conexao, cursor = banco_de_dados.conectar()
-# conexao , cursor = banco_de_dados.conexao, banco_de_dados.cursor
 
-# # Obtenha a conexão e o cursor
-# conexao, cursor = getConexaoCursor()
-
-# # Função para buscar diretores e retornar a lista em DataFrame
+# Funções para obter dados do banco
 def selectDiretores():
-     cursor.execute("SELECT * FROM diretor")
-     diretores = cursor.fetchall()
-     diretores_list = pd.DataFrame(diretores, columns=[desc[0] for desc in cursor.description])
-     return diretores_list
+    cursor.execute("SELECT * FROM diretor")
+    diretores = cursor.fetchall()
+    return pd.DataFrame(diretores, columns=[desc[0] for desc in cursor.description])
 
 def getCategorias():
     cursor.execute("SELECT * FROM categoria")
     categorias = cursor.fetchall()
-    categorias_list = pd.DataFrame(categorias, columns=[desc[0] for desc in cursor.description])
-    return categorias_list
+    return pd.DataFrame(categorias, columns=[desc[0] for desc in cursor.description])
 
-# Função para adicionar filme e vincular a um canal
+def obter_filmes(conexao):
+    with conexao.cursor() as cursor:
+        cursor.execute("SELECT num_filme, titulo_original FROM filme")
+        filmes = cursor.fetchall()
+    return filmes
+
+def obter_canais(conexao):
+    with conexao.cursor() as cursor:
+        cursor.execute("SELECT num_canal, nome FROM canal")
+        canais = cursor.fetchall()
+    return canais
+
 def adicionar_filme(conexao):
-    st.header("Adicionar Filme e Exibição")
-
-    # Buscar diretores e categorias
-    diretores_list = selectDiretores()
-    categorias_list = getCategorias()
+    st.title("Adicionar Filme 🎥")
     
-#     # Formulário para inserção de filme
+    # Carregar a lista de diretores e categorias
+    diretores_list = selectDiretores()  # Função que busca diretores no banco de dados
+    categorias_list = getCategorias()  # Função que busca categorias no banco de dados
+
     with st.form('adicionar_filme'):
         titulo_original = st.text_input('Título Original', max_chars=80)
         titulo_brasil = st.text_input('Título no Brasil (opcional)', max_chars=80)
         ano_lancamento = st.number_input('Ano de Lançamento', min_value=1800, max_value=2024, step=1)
-        poster_url = st.text_input('URL do Poster (opcional)', max_chars=255)
+        poster_url = st.text_input('URL do Poster (opcional)', max_chars=500)
         pais_origem = st.text_input('País de Origem', max_chars=30)
         duracao = st.number_input('Duração (em minutos)', min_value=1, step=1)
         diretor_nome = st.selectbox('Diretor', diretores_list['nome_diretor'])
-        id_diretor = int(diretores_list[diretores_list['nome_diretor'] == diretor_nome]['id_diretor'].values[0])  # Converter para int
+        id_diretor = int(diretores_list[diretores_list['nome_diretor'] == diretor_nome]['id_diretor'].values[0])
         categoria = st.multiselect('Categoria', categorias_list['nome_categoria'])
         id_categoria = categorias_list[categorias_list['nome_categoria'].isin(categoria)]['id_categoria'].values
-        id_categoria = [int(cat) for cat in id_categoria]  # Converter todos os valores para int
+        id_categoria = [int(cat) for cat in id_categoria]
         class_indicativa = st.text_input('Classificação Indicativa', max_chars=5)
-        
-        # Botão de submissão
+        sinopse = st.text_input('Sinopse do Filme', max_chars=500)
         submit_button = st.form_submit_button("Submit")
 
-    # Se o botão for clicado, insere os dados no banco
     if submit_button:
         cursor = conexao.cursor()
-
-        # Inserir na tabela 'filme' sem especificar num_filme (será gerado automaticamente)
         query_filme = """
-        INSERT INTO filme (titulo_original, titulo_brasil, ano_lancamento, poster_url, pas_origem, duracao, id_diretor, class_indicativo)
-        VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+        INSERT INTO filme (titulo_original, titulo_brasil, ano_lancamento, poster_url, pas_origem, duracao, id_diretor, class_indicativo, sinopse)
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
         """
-        valores_filme = (titulo_original, titulo_brasil, ano_lancamento, poster_url, pais_origem, duracao, id_diretor, class_indicativa)
+        valores_filme = (titulo_original, titulo_brasil, ano_lancamento, poster_url, pais_origem, duracao, id_diretor, class_indicativa, sinopse)
         cursor.execute(query_filme, valores_filme)
-        
-        # Obter o ID do último filme inserido
-        num_filme = cursor.lastrowid
 
-        # Inserir categorias para o filme
+        num_filme = cursor.lastrowid
         for cat_id in id_categoria:
             query_categoria_filme = """
             INSERT INTO categorias_filmes (num_filme, id_categoria)
@@ -81,8 +79,84 @@ def adicionar_filme(conexao):
         conexao.commit()
         cursor.close()
 
-        st.success('Filme e exibição cadastrados com sucesso!') 
+        st.success('Filme cadastrado com sucesso!')
 
-# Verifique se há uma conexão válida e chame a função de adicionar filme
 
-adicionar_filme(conexao)
+    st.title("Adicionar Novo Diretor 🎬")
+
+    with st.form('adicionar_diretor'):
+        novo_diretor = st.text_input("Nome do Diretor", max_chars=40)
+        submit_diretor = st.form_submit_button("Adicionar Diretor")
+
+    if submit_diretor:
+        if novo_diretor:
+            cursor = conexao.cursor()
+            query_novo_diretor = "INSERT INTO diretor (nome_diretor) VALUES (%s)"
+            cursor.execute(query_novo_diretor, (novo_diretor,))
+            conexao.commit()
+            cursor.close()
+
+            st.rerun()  
+            st.success("Novo diretor adicionado com sucesso!")
+               
+        else:
+            st.error("Por favor, insira o nome do diretor.")
+     
+    
+
+def selectFilmes():
+    cursor.execute("SELECT * FROM filme")
+    filmes = cursor.fetchall()
+    return pd.DataFrame(filmes, columns=[desc[0] for desc in cursor.description])
+
+def adicionar_exibicao(conexao):
+    st.title("Adicionar Exibição 📅")
+    filme_list = selectFilmes()
+
+    filmes = obter_filmes(conexao)
+    filmes_dict = {titulo: num_filme for num_filme, titulo in filmes}
+    canais = obter_canais(conexao)
+    canais_dict = {nome: num_canal for num_canal, nome in canais}
+    
+    with st.form('adicionar_filme'):
+        filme_nome = st.selectbox('Filme', filme_list['titulo_brasil'])
+        canal_selecionado = st.selectbox("Selecione um Canal", list(canais_dict.keys()))
+        data_exibicao = st.date_input("Data de Exibição")
+        hora_exibicao = st.time_input("Hora de Exibição")
+
+        submit_button = st.form_submit_button("Adicionar Exibicão")
+
+    if submit_button:
+        if filme_nome and canal_selecionado and data_exibicao and hora_exibicao:
+            num_filme = int(filme_list [filme_list['titulo_brasil'] == filme_nome]['num_filme'].values[0]) 
+            num_canal = canais_dict[canal_selecionado]
+            data_hora_exibicao = datetime.combine(data_exibicao, hora_exibicao)
+
+            if submit_button:
+                cursor = conexao.cursor()
+
+                query_filme = """
+                INSERT INTO exibicao (num_filme,num_canal,data_exibicao)
+                VALUES (%s, %s, %s)
+                """
+                valores_filme = (num_filme, num_canal, data_hora_exibicao)
+                cursor.execute(query_filme, valores_filme)
+
+                num_filme = cursor.lastrowid
+
+                conexao.commit()
+                cursor.close()
+
+                st.success('Cadastro de exibição concluido!')
+         
+# Página principal com seleção
+def main():
+    st.sidebar.title("Menu")
+    option = st.sidebar.selectbox("Escolha a opção", ["Adicionar Filme / Diretor", "Adicionar Exibição"])
+
+    if option == "Adicionar Filme / Diretor":
+        adicionar_filme(conexao)
+    elif option == "Adicionar Exibição":
+        adicionar_exibicao(conexao)
+if __name__ == "__main__":
+    main()
