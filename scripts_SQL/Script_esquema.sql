@@ -31,7 +31,7 @@ CREATE TABLE IF NOT EXISTS filme (
     poster_url VARCHAR(255),
     pas_origem VARCHAR(30),
     duracao INT NOT NULL,
-    id_diretor INT NOT NULL,
+    id_diretor INT,
     class_indicativo VARCHAR(3),
     FOREIGN KEY (id_diretor) REFERENCES diretor (id_diretor)
 );
