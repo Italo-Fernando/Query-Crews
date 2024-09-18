@@ -1,5 +1,5 @@
 import mysql.connector
-
+import os
 class database:
 
     def __init__(self,user,password,host,port):
@@ -137,7 +137,8 @@ class database:
         return None
 
     def conexao_info(self):
-        with open('conexao.txt', 'w') as file:
-            file.write(f'{self.user}\n{self.password}\n{self.host}\n{self.port}')
-            return None
-        
+        if not os.path.exists('conexao.txt'):
+            with open('conexao.txt', 'w') as file:
+                file.write(f'{self.user}\n{self.password}\n{self.host}\n{self.port}')
+                return None
+            
