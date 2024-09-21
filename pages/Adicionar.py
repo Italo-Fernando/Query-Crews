@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import funcoes as f
 from datetime import datetime
+from time import sleep
 
 # Conectar ao banco de dados
 with open('conexao.txt', 'r') as file:
@@ -78,8 +79,9 @@ def adicionar_filme(conexao):
 
         conexao.commit()
         cursor.close()
-
         st.success('Filme cadastrado com sucesso!')
+        sleep(3)
+        st.rerun()
 
 
     st.title("Adicionar Novo Diretor 🎬")
@@ -121,7 +123,7 @@ def adicionar_exibicao(conexao):
     with st.form('adicionar_filme'):
         filme_nome = st.selectbox('Filme', filme_list['titulo_brasil'])
         canal_selecionado = st.selectbox("Selecione um Canal", list(canais_dict.keys()))
-        data_exibicao = st.date_input("Data de Exibição")
+        data_exibicao = st.date_input("Data de Exibição", format='DD/MM/YYYY')
         hora_exibicao = st.time_input("Hora de Exibição")
 
         submit_button = st.form_submit_button("Adicionar Exibicão")
@@ -146,8 +148,9 @@ def adicionar_exibicao(conexao):
 
                 conexao.commit()
                 cursor.close()
-
                 st.success('Cadastro de exibição concluido!')
+                sleep(3)
+                st.rerun()
          
 # Página principal com seleção
 def main():

@@ -4,7 +4,7 @@ import pandas as pd
 from components.components import card_component
 import funcoes as f
 import os
-
+from time import sleep
 
 def selectFilmes():
     cursor.execute("SELECT * FROM exibicao e NATURAL LEFT JOIN filme f NATURAL LEFT JOIN canal c")
@@ -135,6 +135,7 @@ if not os.path.exists('conexao.txt'):
         except:  # Ajuste o tipo de exceção
             st.write(f'Erro: ')
             st.write('Verifique se o banco de dados está rodando e se as informações estão corretas.')
+        st.rerun()
 else:
     with open('conexao.txt', 'r') as file:
         user = file.readline().strip()
