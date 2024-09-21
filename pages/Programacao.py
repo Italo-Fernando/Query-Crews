@@ -21,6 +21,36 @@ def buscar_filmes(conexao):
     cursor.close()
     return pd.DataFrame(filmes, columns=['num_filme', 'titulo_original', 'titulo_brasil', 'ano_lancamento', 'poster_url', 'pas_origem', 'duracao', 'class_indicativo', 'sinopse'])
 
+# Função para atualizar o filme no banco de dados
+def atualizar_filme(conexao, num_filme, titulo_original, titulo_brasil, ano_lancamento, poster_url, pas_origem, duracao, class_indicativa, sinopse):
+    try:
+        cursor = conexao.cursor()
+        query = """
+        UPDATE filme 
+        SET titulo_original = %s, titulo_brasil = %s, ano_lancamento = %s, poster_url = %s, pas_origem = %s, 
+            duracao = %s, class_indicativo = %s, sinopse = %s
+        WHERE num_filme = %s
+        """
+        # Converter valores numéricos para tipos Python nativos
+        valores = (
+            titulo_original,
+            titulo_brasil,
+            int(ano_lancamento),  # Conversão para int
+            poster_url,
+            pas_origem,
+            int(duracao),         # Conversão para int
+            class_indicativa,
+            sinopse,
+            int(num_filme)        # Conversão para int
+        )
+        cursor.execute(query, valores)
+        conexao.commit()
+        cursor.close()
+        return True
+    except Exception as e:
+        st.error(f"Erro ao atualizar filme: {e}")
+        return False
+
 # Menu principal da tela de programação
 def main():
     st.sidebar.title("Menu")
@@ -61,9 +91,25 @@ def main():
 
             submit_button = st.form_submit_button("Salvar Alterações")
 
-        # Se o botão for clicado, mostrar mensagem de confirmação (atualização ainda não implementada)
+        # Se o botão for clicado, atualizar os dados no banco de dados
         if submit_button:
-            st.success("Alterações salvas com sucesso! (A atualização do banco de dados ainda não foi implementada)")
+            sucesso = atualizar_filme(
+                conexao,
+                filme_selecionado['num_filme'],
+                titulo_original,
+                titulo_brasil,
+                ano_lancamento,
+                poster_url,
+                pas_origem,
+                duracao,
+                class_indicativa,
+                sinopse
+            )
+
+            if sucesso:
+                st.success("Filme atualizado com sucesso!")
+                sleep(2)
+                st.rerun()
 
     elif option == "Atualizar Exibição":
         st.header("Atualizar Exibição 🎞️")
