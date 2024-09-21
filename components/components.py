@@ -1,6 +1,17 @@
 import streamlit as st
 
+from datetime import datetime
+
 def card_component(title, description, logo_url, logo_caption, background_image, unique_id):
+    # Parse the timestamp and format it
+    timestamp = datetime.strptime(str(logo_caption), "%Y-%m-%d %H:%M:%S")
+    import locale
+    locale.setlocale(locale.LC_TIME, 'pt_BR')
+    
+    formatted_caption = timestamp.strftime("%A - %d/%m").capitalize()
+    formatted_caption_hour = timestamp.strftime("%H:%M")
+    description = description[:200] + '...' if len(description) > 200 else description
+
     st.markdown(f"""
     <style>
     .card-{unique_id} {{
@@ -53,7 +64,7 @@ def card_component(title, description, logo_url, logo_caption, background_image,
 
     .card-title-{unique_id} {{
         position: absolute;
-        top: 150px;
+        top: 100px;
         left: 20px;
         font-size: 32px;
         font-weight: bold;
@@ -62,7 +73,7 @@ def card_component(title, description, logo_url, logo_caption, background_image,
 
     .card-{unique_id} p {{
         position: absolute;
-        top: 200px;
+        top: 150px;
         left: 20px;
         width: 70%;
         padding: 10px 0;
@@ -73,12 +84,11 @@ def card_component(title, description, logo_url, logo_caption, background_image,
 
     st.markdown(f"""
     <article class="card-{unique_id}">
-        <section>
             <div class="movie-bg-{unique_id}"></div>
             <figure class="chanel-logo-{unique_id}">
                 <img src="{logo_url}" alt="Logo do Canal">
                 <figcaption>
-                    <h5>{logo_caption}</h5>
+                    <h5>{formatted_caption}<br>{formatted_caption_hour}</h5>
                 </figcaption>
             </figure>
             <h2 class="card-title-{unique_id}">{title}</h2>
