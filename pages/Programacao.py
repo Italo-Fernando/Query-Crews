@@ -1,77 +1,47 @@
 import streamlit as st
-from home import getConexaoCursor
+import funcoes as f
+from time import sleep
 
-conexao, cursor = getConexaoCursor()
+# Conectar ao banco de dados
+with open('conexao.txt', 'r') as file:
+    user = file.readline().strip()
+    password = file.readline().strip()
+    host = file.readline().strip()
+    porta = file.readline().strip()
 
-def pesquisar_filmes(conexao):
-    st.header("Pesquisar Filmes")
+banco_de_dados = f.database(user, password, host, porta)
+conexao, cursor = banco_de_dados.conectar()
 
-    # Definir os gêneros fixos em minúsculas
-    generos_disponiveis = [
-        "ação", "aventura", "animação", "comédia", "drama", "fantasia",
-        "ficção científica", "terror", "mistério", "romance", "suspense",
-        "documentário", "musical", "histórico", "guerra", "ocultismo",
-        "criminal", "biografia", "far oeste", "film-noir", "esporte",
-        "família", "comédia romântica"
-    ]
-
-    # Buscar todos os canais disponíveis
+# Função para buscar filmes do banco de dados
+def buscar_filmes(conexao):
     cursor = conexao.cursor()
-    cursor.execute("SELECT num_canal, sigla FROM canal")
-    canais = cursor.fetchall()
-    canais = {f"{sigla} [ID: {num}]": num for num, sigla in canais}  # Mapeia sigla para num_canal
-    cursor.close()
-
-    # Filtros
-    st.sidebar.subheader("Filtros")
-
-    # Filtro por gênero
-    filtro_genero = st.sidebar.selectbox("Gênero", ["Todos"] + generos_disponiveis)
-
-    # Filtro por ano
-    ano_min = st.sidebar.number_input("Ano Mínimo", min_value=1900, max_value=2100, value=1900, step=1)
-    ano_max = st.sidebar.number_input("Ano Máximo", min_value=1900, max_value=2100, value=2024, step=1)
-
-    # Filtro por canais de exibição
-    filtro_canal = st.sidebar.selectbox("Canal", ["Todos"] + list(canais.keys()))
-
-    # Montar a consulta SQL com filtros
-    query = """
-    SELECT f.num_filme, f.titulo_original, f.titulo_brasil, f.ano_lancamento, f.pais_origem, f.categoria, f.duracao
-    FROM filme f
-    LEFT JOIN exibicao e ON f.num_filme = e.num_filme
-    WHERE (LOWER(f.categoria) = %s OR %s = 'todos')
-    AND (f.ano_lancamento BETWEEN %s AND %s)
-    AND (e.num_canal = %s OR %s = 'todos')
-    """
-
-    # Executar a consulta com filtros
-    params = (
-        filtro_genero.lower(),
-        filtro_genero.lower(),
-        ano_min,
-        ano_max,
-        canais.get(filtro_canal, None),
-        filtro_canal.lower()
-    )
-    cursor = conexao.cursor()
-    cursor.execute(query, params)
+    cursor.execute("SELECT num_filme, titulo_original, ano_lancamento FROM filme")
     filmes = cursor.fetchall()
     cursor.close()
+    return filmes
 
-    # Exibir os filmes encontrados
-    if filmes:
-        st.write("### Resultados da Pesquisa")
-        for filme in filmes:
-            st.write(f"**Título Original:** {filme[1]}")
-            st.write(f"**Título no Brasil:** {filme[2] if filme[2] else 'Não disponível'}")
-            st.write(f"**Ano de Lançamento:** {filme[3]}")
-            st.write(f"**País de Origem:** {filme[4] if filme[4] else 'Não disponível'}")
-            st.write(f"**Gênero:** {filme[5] if filme[5] else 'Não disponível'}")
-            st.write(f"**Duração:** {filme[6]} minutos")
-            st.write("---")
-    else:
-        st.write("Nenhum filme encontrado com os critérios de pesquisa.")
+# Menu principal da tela de programação
+def main():
+    st.sidebar.title("Menu")
+    option = st.sidebar.selectbox("Escolha a opção", ["Atualizar Filme", "Atualizar Exibição"])
 
-if conexao and cursor:
-    pesquisar_filmes(conexao)
+    if option == "Atualizar Filme":
+        st.header("Atualizar Filme 🎥")
+        filmes = buscar_filmes(conexao)
+
+        if not filmes:
+            st.warning("Nenhum filme encontrado no banco de dados.")
+            return
+
+        # Menu dropdown para selecionar o filme
+        opcoes_filmes = {f"{titulo} ({ano})": num for num, titulo, ano in filmes}
+        filme_escolhido = st.selectbox('Selecione o filme para atualizar', list(opcoes_filmes.keys()))
+
+        st.write(f'Filme selecionado: {filme_escolhido}')
+
+    elif option == "Atualizar Exibição":
+        st.header("Atualizar Exibição 🎞️")
+        st.write("Essa parte ainda está em desenvolvimento...")
+
+if __name__ == "__main__":
+    main()
