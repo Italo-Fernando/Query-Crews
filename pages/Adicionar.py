@@ -119,38 +119,37 @@ def adicionar_exibicao(conexao):
     filmes_dict = {titulo: num_filme for num_filme, titulo in filmes}
     canais = obter_canais(conexao)
     canais_dict = {nome: num_canal for num_canal, nome in canais}
-    
+
     with st.form('adicionar_filme'):
         filme_nome = st.selectbox('Filme', filme_list['titulo_brasil'])
-        canal_selecionado = st.selectbox("Selecione um Canal", list(canais_dict.keys()))
+        canal_selecionado = st.text_input("Digite o ID do Canal", "")
         data_exibicao = st.date_input("Data de Exibição", format='DD/MM/YYYY')
         hora_exibicao = st.time_input("Hora de Exibição")
 
-        submit_button = st.form_submit_button("Adicionar Exibicão")
+        submit_button = st.form_submit_button("Adicionar Exibição")
 
     if submit_button:
         if filme_nome and canal_selecionado and data_exibicao and hora_exibicao:
-            num_filme = int(filme_list [filme_list['titulo_brasil'] == filme_nome]['num_filme'].values[0]) 
-            num_canal = canais_dict[canal_selecionado]
+            num_filme = int(filme_list[filme_list['titulo_brasil'] == filme_nome]['num_filme'].values[0])
+            # Permite que o usuário digite um canal, mesmo que não exista
+            num_canal = canal_selecionado  # Aqui, o valor é lido diretamente do campo de texto
             data_hora_exibicao = datetime.combine(data_exibicao, hora_exibicao)
 
-            if submit_button:
-                cursor = conexao.cursor()
+            cursor = conexao.cursor()
 
-                query_filme = """
-                INSERT INTO exibicao (num_filme,num_canal,data_exibicao)
-                VALUES (%s, %s, %s)
-                """
-                valores_filme = (num_filme, num_canal, data_hora_exibicao)
-                cursor.execute(query_filme, valores_filme)
+            query_filme = """
+            INSERT INTO exibicao (num_filme, num_canal, data_exibicao)
+            VALUES (%s, %s, %s)
+            """
+            valores_filme = (num_filme, num_canal, data_hora_exibicao)
+            cursor.execute(query_filme, valores_filme)
 
-                num_filme = cursor.lastrowid
+            conexao.commit()
+            cursor.close()
+            st.success('Cadastro de exibição concluído!')
+            sleep(3)
+            st.rerun()
 
-                conexao.commit()
-                cursor.close()
-                st.success('Cadastro de exibição concluido!')
-                sleep(3)
-                st.rerun()
          
 # Página principal com seleção
 def main():

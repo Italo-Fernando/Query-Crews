@@ -83,11 +83,10 @@ def mostrar_filmes(filmes_df, title):
                 unique_id=f"card2_{item_selecionado + 1}"  # Adicionando um identificador único
             )
 
-# Função para buscar todas as categorias de filmes em exibição
+
 def get_categorias_filmes():
     conexao, cursor = banco_de_dados.conectar()
     
-    # Consulta para obter as categorias apenas dos filmes que estão em exibição
     query = """
     SELECT DISTINCT c.nome_categoria
     FROM categoria c
