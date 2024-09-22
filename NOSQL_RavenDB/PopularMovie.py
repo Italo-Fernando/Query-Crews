@@ -2,8 +2,10 @@ from Ravendb import get_store
 
 
 # Defina a classe do filme
+from Ravendb import get_store
+
 class Film:
-    def __init__(self, titulo_original, titulo_brasil, sinopse, ano_lancamento, poster_url, pas_origem, duracao, id_diretor, class_indicativo):
+    def __init__(self, titulo_original, titulo_brasil, sinopse, ano_lancamento, poster_url, pas_origem, duracao, id_diretor, class_indicativo, exibicoes=None):
         self.titulo_original = titulo_original
         self.titulo_brasil = titulo_brasil
         self.sinopse = sinopse
@@ -13,16 +15,31 @@ class Film:
         self.duracao = duracao
         self.id_diretor = id_diretor    
         self.class_indicativo = class_indicativo
+        self.exibicoes = exibicoes if exibicoes else []
 
-# Função para adicionar filmes
+# Função para adicionar filmes com ID gerado automaticamente pelo RavenDB
 def add_movies(movies):
     store = get_store()
     with store.open_session() as session:
-        for index, movie in enumerate(movies, start=1):
-            film = Film(**movie)  # Crie uma instância da classe Film
-            film_id = f"films/{index}"  # Gere o ID no formato desejado
-            session.store(film, film_id)  # Armazene o filme com o ID gerado
+        for movie in movies:
+            film = Film(**movie)  # Cria uma instância da classe Film
+            session.store(film)   # Deixa o RavenDB gerar o ID automaticamente
         session.save_changes()
+
+        # Recuperar e exibir os IDs gerados
+        for movie in movies:
+            film_id = session.advanced.get_document_id(film)
+            print(f"Filme inserido com ID: {film_id}")
+
+exhibitions_inside_out = [
+    {"num_canal": "channels/7", "data_exibicao": '2024-09-18 00:00:00'},
+    {"num_canal": "channels/12", "data_exibicao": '2024-09-18 04:30:00'},
+]
+
+exhibitions_interstellar = [
+    {"num_canal": "channels/10", "data_exibicao": '2024-09-25 10:30:00'},
+    {"num_canal": "channels/4", "data_exibicao": '2024-09-30 15:00:00'},
+]
 
 
 novos_filmes = [
@@ -35,7 +52,9 @@ novos_filmes = [
         "pas_origem": "EUA",
         "duracao": 96,
         "id_diretor": "directors/1",
-        "class_indicativo": "Livre"
+        "class_indicativo": "Livre",
+        "exibicoes": exhibitions_inside_out
+        
     },
     {
         "titulo_original": "Interstellar",
@@ -46,7 +65,9 @@ novos_filmes = [
         "pas_origem": "EUA",
         "duracao": 169,
         "id_diretor": "directors/2",
-        "class_indicativo": "10"
+        "class_indicativo": "10",
+        "exibicoes": exhibitions_interstellar
+
     },
       {
         "titulo_original": "Inception",
@@ -57,7 +78,7 @@ novos_filmes = [
         "pas_origem": "EUA",
         "duracao": 148,
         "id_diretor": "directors/2",
-        "class_indicativo": "12"
+        "class_indicativo": "12",
     },
     {
         "titulo_original": "The Matrix",
