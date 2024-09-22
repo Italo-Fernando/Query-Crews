@@ -17,7 +17,7 @@ Se você deseja contribuir com o projeto, siga estes passos:
 - Banco de dados relacional : (`MySQL`).
 - Banco de dados NoSQL : (`Supabase`).
 - Framework (`Sreamlit`).
-- PS: Todas as dependencias podem ser instaladas por meio do arquivo (`Requirements.txt`) .
+- PS: Todas as dependencias podem ser instaladas por meio do comando(`pip install -r requirements.txt`) .
 
 ## **📜 Diagrama EER**
 
