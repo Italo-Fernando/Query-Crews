@@ -9,10 +9,10 @@ def add_directors(directors):
     with store.open_session() as session:
         for director in directors:
             director_instance = Director(**director)
-            session.store(director_instance)  # Deixa o RavenDB gerar o ID automaticamente
+            session.store(director_instance) 
         session.save_changes()
 
-        # Recuperar e exibir os IDs gerados
+
         for director in directors:
             director_id = session.advanced.get_document_id(director_instance)
             print(f"Diretor inserido com ID: {director_id}")
