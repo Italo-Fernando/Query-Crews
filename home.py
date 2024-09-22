@@ -4,7 +4,6 @@ import pandas as pd
 from components.components import card_component
 import funcoes as f
 import os
-from time import sleep
 
 def selectFilmes():
     cursor.execute("SELECT * FROM exibicao e NATURAL LEFT JOIN filme f NATURAL LEFT JOIN canal c")
