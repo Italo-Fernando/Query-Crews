@@ -5,106 +5,109 @@ from components.components import card_component
 import funcoes as f
 import os
 
-def selectFilmes():
-    cursor.execute("SELECT * FROM exibicao e NATURAL LEFT JOIN filme f NATURAL LEFT JOIN canal c")
-
-    filmes = cursor.fetchall()
-    cursor.close()
-
-    df = pd.DataFrame(filmes, columns=[desc[0] for desc in cursor.description])
-
-    return df
-
-def selectFilmesDrama():
+# Função para selecionar filmes com base na categoria
+def select_filmes_por_categoria(categoria):
     conexao, cursor = banco_de_dados.conectar()
-    cursor.execute("SELECT * FROM filme f NATURAL LEFT JOIN canal c NATURAL JOIN categorias_filmes NATURAL JOIN categoria NATURAL JOIN exibicao e WHERE nome_categoria = 'Ficção Científica'")
-
+    
+    if categoria == "Todos":
+        query = """
+        SELECT f.*, c.logo_canal, e.data_exibicao 
+        FROM exibicao e
+        NATURAL LEFT JOIN filme f
+        NATURAL LEFT JOIN canal c
+        """
+    else:
+        query = f"""
+        SELECT f.*, c.logo_canal, e.data_exibicao 
+        FROM filme f
+        NATURAL LEFT JOIN canal c
+        NATURAL JOIN categorias_filmes 
+        NATURAL JOIN categoria 
+        NATURAL JOIN exibicao e 
+        WHERE categoria.nome_categoria = '{categoria}'
+        """
+    
+    cursor.execute(query)
     filmes = cursor.fetchall()
     cursor.close()
 
     df = pd.DataFrame(filmes, columns=[desc[0] for desc in cursor.description])
-
     return df
 
-def mostrar_filmes(filmes_df, title):    
-        cards = [
-                            {
-                                "title": filme['titulo_brasil'],
-                                "description": filme['sinopse'],
-                                "logo_url": filme['logo_canal'],
-                                "logo_caption": filme['data_exibicao'], 
-                                "background_image": filme['poster_url']
-                            }
-                            for _, filme in filmes_df.iterrows()
-                        ]
-        
-        st.subheader(title)
-        
-        if len(cards) > 1:
-            item_selecionado = st.slider(f'{title}', 0, len(cards) - 2, len(cards)-1)
-        else:
-            st.write("Não há filmes suficientes para exibir no slider.")
-        col1, col2 = st.columns(2)
-        with col1:
-            card_component(
-                title=cards[item_selecionado]["title"],
-                description=cards[item_selecionado]["description"],
-                logo_url=cards[item_selecionado]["logo_url"],
-                logo_caption=cards[item_selecionado]["logo_caption"],
-                background_image=cards[item_selecionado]["background_image"],
-                unique_id=f"card1_{item_selecionado}"  # Adicionando um identificador único
-            )
-        with col2:
-            if item_selecionado + 1 < len(cards):
-                card_component(
-                    title=cards[item_selecionado + 1]["title"],
-                    description=cards[item_selecionado + 1]["description"],
-                    logo_url=cards[item_selecionado + 1]["logo_url"],
-                    logo_caption=cards[item_selecionado + 1]["logo_caption"],
-                    background_image=cards[item_selecionado + 1]["background_image"],
-                    unique_id=f"card2_{item_selecionado + 1}"  # Adicionando um identificador único
-                )
-                
-def mostrar_filmes_categroria(filmes_df, title):    
-        cards = [
-                            {
-                                "title": filme['titulo_brasil'],
-                                "description": filme['sinopse'],
-                                "logo_url": filme['logo_canal'],
-                                "logo_caption": filme['data_exibicao'], 
-                                "background_image": filme['poster_url']
-                            }
-                            for _, filme in filmes_df.iterrows()
-                        ]
-        
-        st.subheader(title)
-        
-        if len(cards) > 1:
-            item_selecionado_categoria = st.slider(f'{title}', 0, len(cards) - 2, len(cards)-1)
-        else:
-            st.write("Não há filmes suficientes para exibir no slider.")
-        col1, col2 = st.columns(2)
-        with col1:
-            card_component(
-                title=cards[item_selecionado_categoria]["title"],
-                description=cards[item_selecionado_categoria]["description"],
-                logo_url=cards[item_selecionado_categoria]["logo_url"],
-                logo_caption=cards[item_selecionado_categoria]["logo_caption"],
-                background_image=cards[item_selecionado_categoria]["background_image"],
-                unique_id=f"card1_{item_selecionado_categoria}"  # Adicionando um identificador único
-            )
-        with col2:
-            if item_selecionado_categoria + 1 < len(cards):
-                card_component(
-                    title=cards[item_selecionado_categoria + 1]["title"],
-                    description=cards[item_selecionado_categoria + 1]["description"],
-                    logo_url=cards[item_selecionado_categoria + 1]["logo_url"],
-                    logo_caption=cards[item_selecionado_categoria + 1]["logo_caption"],
-                    background_image=cards[item_selecionado_categoria + 1]["background_image"],
-                    unique_id=f"card2_{item_selecionado_categoria + 1}"  # Adicionando um identificador único
-                )
+# Função para exibir os filmes
+# Função para exibir os filmes
+def mostrar_filmes(filmes_df, title):
+    cards = [
+        {
+            "title": filme['titulo_brasil'],
+            "description": filme['sinopse'],
+            "logo_url": filme['logo_canal'],
+            "logo_caption": filme['data_exibicao'], 
+            "background_image": filme['poster_url']
+        }
+        for _, filme in filmes_df.iterrows()
+    ]
 
+    st.subheader(title)
 
+    if len(cards) > 1:
+        # Se houver mais de um filme, o slider é exibido
+        item_selecionado = st.slider(f'{title}', 0, len(cards) - 2, len(cards) - 1)
+    else:
+        # Se houver apenas um filme, não exibe o slider e seleciona o primeiro item
+        st.write("Não há filmes suficientes para exibir no slider.")
+        item_selecionado = 0
+
+    col1, col2 = st.columns(2)
+    
+    # Exibe o primeiro card
+    with col1:
+        card_component(
+            title=cards[item_selecionado]["title"],
+            description=cards[item_selecionado]["description"],
+            logo_url=cards[item_selecionado]["logo_url"],
+            logo_caption=cards[item_selecionado]["logo_caption"],
+            background_image=cards[item_selecionado]["background_image"],
+            unique_id=f"card1_{item_selecionado}"  # Adicionando um identificador único
+        )
+    
+    # Exibe o segundo card, se houver
+    with col2:
+        if item_selecionado + 1 < len(cards):
+            card_component(
+                title=cards[item_selecionado + 1]["title"],
+                description=cards[item_selecionado + 1]["description"],
+                logo_url=cards[item_selecionado + 1]["logo_url"],
+                logo_caption=cards[item_selecionado + 1]["logo_caption"],
+                background_image=cards[item_selecionado + 1]["background_image"],
+                unique_id=f"card2_{item_selecionado + 1}"  # Adicionando um identificador único
+            )
+
+# Função para buscar todas as categorias de filmes em exibição
+def get_categorias_filmes():
+    conexao, cursor = banco_de_dados.conectar()
+    
+    # Consulta para obter as categorias apenas dos filmes que estão em exibição
+    query = """
+    SELECT DISTINCT c.nome_categoria
+    FROM categoria c
+    JOIN categorias_filmes cf ON c.id_categoria = cf.id_categoria
+    JOIN exibicao e ON cf.num_filme = e.num_filme
+    """
+    
+    cursor.execute(query)
+    categorias = cursor.fetchall()
+    cursor.close()
+
+    # Transforma a lista de tuplas em uma lista simples
+    categorias = [categoria[0] for categoria in categorias]
+
+    # Adiciona a opção "Todos" no início da lista
+    categorias.insert(0, "Todos")
+
+    return categorias
+
+# Verificar a conexão com o banco de dados
 if not os.path.exists('conexao.txt'):
     st.set_page_config(layout="wide")
 
@@ -124,15 +127,19 @@ if not os.path.exists('conexao.txt'):
             st.title("🎥 **Query Crews - Guia de Filmes e Canais**")
             st.write("**Encontre facilmente os horários dos seus filmes favoritos nos canais disponíveis.**")
             st.divider()
-            
-            filmes_df = selectFilmes()
-    
-            mostrar_filmes(filmes_df, "Filmes da Semana")
-    
-            mostrar_filmes_categroria(selectFilmesDrama(), "Filmes de Drama")
+
+            # Buscar categorias dinamicamente
+            categorias = get_categorias_filmes()
+
+            # Adicionar uma selectbox para escolher a categoria
+            categoria_escolhida = st.selectbox("Escolha a categoria de filme", categorias)
+
+            # Selecionar e exibir os filmes com base na categoria escolhida
+            filmes_df = select_filmes_por_categoria(categoria_escolhida)
+            mostrar_filmes(filmes_df, f"Filmes de {categoria_escolhida}")
                 
-        except:  # Ajuste o tipo de exceção
-            st.write(f'Erro: ')
+        except Exception as e:
+            st.write(f'Erro: {e}')
             st.write('Verifique se o banco de dados está rodando e se as informações estão corretas.')
         st.rerun()
 else:
@@ -148,9 +155,13 @@ else:
     st.title("🎥 **Query Crews - Guia de Filmes e Canais**")
     st.write("**Encontre facilmente os horários dos seus filmes favoritos nos canais disponíveis.**")
     st.divider()
-    
-    filmes_df = selectFilmes()
-    
-    mostrar_filmes(filmes_df, "Filmes da Semana")
-    
-    mostrar_filmes_categroria(selectFilmesDrama(), "Filmes de Drama")
+
+    # Buscar categorias dinamicamente
+    categorias = get_categorias_filmes()
+
+    # Adicionar uma selectbox para escolher a categoria
+    categoria_escolhida = st.selectbox("Escolha a categoria de filme", categorias)
+
+    # Selecionar e exibir os filmes com base na categoria escolhida
+    filmes_df = select_filmes_por_categoria(categoria_escolhida)
+    mostrar_filmes(filmes_df, f"Filmes de {categoria_escolhida}")

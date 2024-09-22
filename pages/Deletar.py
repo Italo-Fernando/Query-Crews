@@ -13,7 +13,7 @@ conexao, cursor = banco_de_dados.conectar()
 
 def buscar_filmes(conexao):
     cursor = conexao.cursor()
-    cursor.execute("SELECT num_filme, titulo_original, ano_lancamento FROM filme")
+    cursor.execute("SELECT num_filme, titulo_brasil, ano_lancamento FROM filme")
     filmes = cursor.fetchall()
     cursor.close()
     return filmes
@@ -60,7 +60,12 @@ def deletar_exibicao(conexao):
     num_filme_selecionado = opcoes_filmes[filme_escolhido]
 
     cursor = conexao.cursor()
-    cursor.execute("SELECT num_canal, data_exibicao FROM exibicao WHERE num_filme = %s", (num_filme_selecionado,))
+    cursor.execute("""
+        SELECT exibicao.num_canal, exibicao.data_exibicao, canal.nome
+        FROM exibicao
+        JOIN canal ON exibicao.num_canal = canal.num_canal
+        WHERE exibicao.num_filme = %s
+    """, (num_filme_selecionado,))
     exibicoes = cursor.fetchall()
     cursor.close()
 
@@ -68,10 +73,10 @@ def deletar_exibicao(conexao):
         st.warning("Nenhuma exibição encontrada para este filme.")
         return
 
-    # Formatar as datas para o formato DD/MM/YYYY
+    # Formatar as datas para o formato DD/MM/YYYY HH:MM
     opcoes_exibicoes = {
-        f"Canal: {canal} | Data: {data.strftime('%d/%m/%Y')}": (canal, data)
-        for canal, data in exibicoes
+        f"Canal: {nome_canal} | Data e Hora: {data.strftime('%d/%m/%Y %H:%M')}": (num_canal, data)
+        for num_canal, data, nome_canal in exibicoes
     }
 
     exibicao_escolhida = st.selectbox('Selecione a exibição que deseja deletar', list(opcoes_exibicoes.keys()))
@@ -84,9 +89,10 @@ def deletar_exibicao(conexao):
 
         conexao.commit()
         cursor.close()
-        st.success(f'Exibição no canal {canal_exibicao_selecionado} na data {data_exibicao_selecionada.strftime("%d/%m/%Y")} deletada com sucesso!')
+        st.success(f'Exibição no canal {canal_exibicao_selecionado} na data {data_exibicao_selecionada.strftime("%d/%m/%Y %H:%M")} deletada com sucesso!')
         sleep(3)
         st.rerun()
+
 pagina = st.sidebar.selectbox("Escolha a página", ["Deletar Filme", "Deletar Exibição"])
 
 if pagina == "Deletar Filme":
