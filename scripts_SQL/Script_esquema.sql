@@ -19,10 +19,6 @@ CREATE TABLE IF NOT EXISTS canal (
     logo_canal VARCHAR(255)
 ) DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
-CREATE TABLE IF NOT EXISTS premio (
-    id_premio INT AUTO_INCREMENT PRIMARY KEY,
-    premios VARCHAR(70) NOT NULL
-) DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 CREATE TABLE IF NOT EXISTS filme (
     num_filme INT AUTO_INCREMENT PRIMARY KEY,
@@ -39,12 +35,6 @@ CREATE TABLE IF NOT EXISTS filme (
     UNIQUE (titulo_brasil, titulo_original)
 ) DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
-CREATE TABLE IF NOT EXISTS premio_filme (
-    id_premio INT,
-    num_filme INT,
-    FOREIGN KEY (id_premio) REFERENCES premio (id_premio) ON DELETE CASCADE,
-    FOREIGN KEY (num_filme) REFERENCES filme (num_filme) ON DELETE CASCADE
-) DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 CREATE TABLE IF NOT EXISTS exibicao (
     num_filme INT,
