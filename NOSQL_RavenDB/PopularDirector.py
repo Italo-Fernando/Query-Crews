@@ -7,11 +7,15 @@ class Director:
 def add_directors(directors):
     store = get_store()
     with store.open_session() as session:
-        for index, director in enumerate(directors, start=1):
-            director_instance = Director(**director) 
-            director_id = f"directors/{index}"  
-            session.store(director_instance, director_id) 
+        for director in directors:
+            director_instance = Director(**director)
+            session.store(director_instance)  # Deixa o RavenDB gerar o ID automaticamente
         session.save_changes()
+
+        # Recuperar e exibir os IDs gerados
+        for director in directors:
+            director_id = session.advanced.get_document_id(director_instance)
+            print(f"Diretor inserido com ID: {director_id}")
 
 novo_diretor = [
     {"nome_diretor": "Kelsey Mann"},

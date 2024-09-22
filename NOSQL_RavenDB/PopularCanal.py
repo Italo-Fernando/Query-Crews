@@ -6,15 +6,17 @@ class Channel:
         self.sigla = sigla
         self.logo_canal = logo_canal
 
-# Função para adicionar canais
 def add_channels(channels):
     store = get_store()
     with store.open_session() as session:
-        for index, channel in enumerate(channels, start=1):
-            channel_instance = Channel(**channel)  
-            channel_id = f"channels/{index}"  
-            session.store(channel_instance, channel_id)  
+        for channel in channels:
+            channel_instance = Channel(**channel)
+            session.store(channel_instance)  
         session.save_changes()
+
+        for channel in channels:
+            channel_id = session.advanced.get_document_id(channel_instance)
+            print(f"Canal inserido com ID: {channel_id}")
 
 
 channels = [
