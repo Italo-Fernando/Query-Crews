@@ -23,5 +23,5 @@ Se você deseja contribuir com o projeto, siga estes passos:
 
 Está é a representação de entidade relacionamento utilizadas no projeto:
 
-![image](https://github.com/user-attachments/assets/6db08247-cb05-4c06-8b5f-a6fb75d98e69)
 
+![DER-IAAD](https://github.com/user-attachments/assets/4bfc52f6-4e02-4865-9f60-78a3d0a8104f)
