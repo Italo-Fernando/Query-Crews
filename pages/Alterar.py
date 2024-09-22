@@ -13,7 +13,7 @@ with open('conexao.txt', 'r') as file:
 banco_de_dados = f.database(user, password, host, porta)
 conexao, cursor = banco_de_dados.conectar()
 
-# Função para buscar filmes do banco de dados
+
 def buscar_filmes(conexao):
     cursor = conexao.cursor()
     cursor.execute("SELECT num_filme, titulo_original, titulo_brasil, ano_lancamento, poster_url, pas_origem, duracao, class_indicativo, sinopse FROM filme")
@@ -21,7 +21,7 @@ def buscar_filmes(conexao):
     cursor.close()
     return pd.DataFrame(filmes, columns=['num_filme', 'titulo_original', 'titulo_brasil', 'ano_lancamento', 'poster_url', 'pas_origem', 'duracao', 'class_indicativo', 'sinopse'])
 
-# Função para atualizar o filme no banco de dados
+
 def atualizar_filme(conexao, num_filme, titulo_original, titulo_brasil, ano_lancamento, poster_url, pas_origem, duracao, class_indicativa, sinopse):
     try:
         cursor = conexao.cursor()
@@ -31,17 +31,17 @@ def atualizar_filme(conexao, num_filme, titulo_original, titulo_brasil, ano_lanc
             duracao = %s, class_indicativo = %s, sinopse = %s
         WHERE num_filme = %s
         """
-        # Converter valores numéricos para tipos Python nativos
+        
         valores = (
             titulo_original,
             titulo_brasil,
-            int(ano_lancamento),  # Conversão para int
+            int(ano_lancamento),  
             poster_url,
             pas_origem,
-            int(duracao),         # Conversão para int
+            int(duracao),        
             class_indicativa,
             sinopse,
-            int(num_filme)        # Conversão para int
+            int(num_filme)        
         )
         cursor.execute(query, valores)
         conexao.commit()
@@ -51,7 +51,6 @@ def atualizar_filme(conexao, num_filme, titulo_original, titulo_brasil, ano_lanc
         st.error(f"Erro ao atualizar filme: {e}")
         return False
 
-# Menu principal da tela de programação
 def main():
     st.sidebar.title("Menu")
     option = st.sidebar.selectbox("Escolha a opção", ["Atualizar Filme",])
@@ -64,21 +63,19 @@ def main():
             st.warning("Nenhum filme encontrado no banco de dados.")
             return
 
-        # Menu dropdown para selecionar o filme
+        # Menu dropdown
         opcoes_filmes = {f"{titulo} ({ano})": num for num, titulo, ano in zip(filmes_df['num_filme'], filmes_df['titulo_brasil'], filmes_df['ano_lancamento'])}
         filme_escolhido = st.selectbox('Selecione o filme para atualizar', list(opcoes_filmes.keys()))
 
-        # Verificar se o filme selecionado existe no DataFrame
+        
         filme_selecionado = filmes_df[filmes_df['num_filme'] == opcoes_filmes[filme_escolhido]]
 
         if filme_selecionado.empty:
             st.error("Erro: Filme selecionado não encontrado.")
             return
         
-        # Pegar a primeira linha do DataFrame
         filme_selecionado = filme_selecionado.iloc[0]
 
-        # Exibir formulário com informações atuais
         with st.form(key="atualizar_filme_form"):
             titulo_original = st.text_input('Título Original', value=filme_selecionado['titulo_original'])
             titulo_brasil = st.text_input('Título no Brasil', value=filme_selecionado['titulo_brasil'])
@@ -91,7 +88,6 @@ def main():
 
             submit_button = st.form_submit_button("Salvar Alterações")
 
-        # Se o botão for clicado, atualizar os dados no banco de dados
         if submit_button:
             sucesso = atualizar_filme(
                 conexao,
