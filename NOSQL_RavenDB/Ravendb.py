@@ -1,7 +1,7 @@
 from ravendb import DocumentStore
 
 def get_store():
-    store = DocumentStore(["http://localhost:8085"], "IAADProjectL")
+    store = DocumentStore(["http://localhost:8080"], "IAADProjectL")
     store.initialize()
     return store
 
