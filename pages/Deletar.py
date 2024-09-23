@@ -34,9 +34,6 @@ def deletar_filme(conexao):
     if st.button("Deletar Filme"):
         cursor = conexao.cursor()
 
-        query_exibicao = "DELETE FROM exibicao WHERE num_filme = %s"
-        cursor.execute(query_exibicao, (num_filme_selecionado,))
-
         query_filme = "DELETE FROM filme WHERE num_filme = %s"
         cursor.execute(query_filme, (num_filme_selecionado,))
 
