@@ -1,9 +1,5 @@
 from Ravendb import get_store
 
-
-# Defina a classe do filme
-from Ravendb import get_store
-
 class Film:
     def __init__(self, titulo_original, titulo_brasil, sinopse, ano_lancamento, poster_url, pas_origem, duracao, id_diretor, class_indicativo, exibicoes=None):
         self.titulo_original = titulo_original
@@ -32,15 +28,37 @@ def add_movies(movies):
             print(f"Filme inserido com ID: {film_id}")
 
 exhibitions_inside_out = [
-    {"num_canal": "channels/7", "data_exibicao": '2024-09-18 00:00:00'},
-    {"num_canal": "channels/12", "data_exibicao": '2024-09-18 04:30:00'},
+    {"num_canal": "channels/7-A", "data_exibicao": '2024-09-18 00:00:00'},
+    {"num_canal": "channels/12-A", "data_exibicao": '2024-09-18 04:30:00'},
 ]
 
 exhibitions_interstellar = [
-    {"num_canal": "channels/10", "data_exibicao": '2024-09-25 10:30:00'},
-    {"num_canal": "channels/4", "data_exibicao": '2024-09-30 15:00:00'},
+    {"num_canal": "channels/10-A", "data_exibicao": '2024-09-25 10:30:00'},
+    {"num_canal": "channels/4-A", "data_exibicao": '2024-09-30 15:00:00'},
 ]
 
+exhibitions_shape_of_water = [
+    {"num_canal": "channels/1-A", "data_exibicao": '2024-09-17 08:30:00'},
+    {"num_canal": "channels/7-A", "data_exibicao": '2024-09-18 11:00:00'}
+]
+exhibitions_The_Dark_Knight = [
+    {"num_canal": "channels/11-A", "data_exibicao": '2024-10-06 10:50:00'},
+    {"num_canal": "channels/11-A", "data_exibicao": '2024-07-22 23:00:00'}
+]
+exhibitions_clube_da_luta = [
+    {"num_canal": "channels/4-A", "data_exibicao": '2024-08-25 20:30:00'},
+    {"num_canal": "channels/1-A", "data_exibicao": '2024-09-23 23:00:00'}
+]
+
+exhibitions_coco = [
+    {"num_canal": "channels/14-A", "data_exibicao": '2024-11-11 14:30:00'},
+    {"num_canal": "channels/14-A", "data_exibicao": '2024-09-23 11:00:00'}
+]
+
+exhibitions_Mad_Max = [
+    {"num_canal": "channels/1-A", "data_exibicao": '2024-12-11 11:30:00'},
+    {"num_canal": "channels/14-A", "data_exibicao": '2024-10-21 06:00:00'}
+]
 
 novos_filmes = [
     {
@@ -51,7 +69,7 @@ novos_filmes = [
         "poster_url": "https://s2-gshow.glbimg.com/dNCoZiC_keIRzhEw4UmfREovP9g=/1200x/smart/filters:cover():strip_icc()/i.s3.glbimg.com/v1/AUTH_e84042ef78cb4708aeebdf1c68c6cbd6/internal_photos/bs/2024/Y/Q/t3mVQNQu6qdzvBjCthUg/divertidamente-divertida-mente-ansiedade-alegria-inside-out-filme-pixar.jpg",
         "pas_origem": "EUA",
         "duracao": 96,
-        "id_diretor": "directors/1",
+        "id_diretor": "directors/1-A",
         "class_indicativo": "Livre",
         "exibicoes": exhibitions_inside_out
         
@@ -64,7 +82,7 @@ novos_filmes = [
         "poster_url": "https://beam-images.warnermediacdn.com/BEAM_LWM_DELIVERABLES/aa5b9295-8f9c-44f5-809b-3f2b84badfbf/8a7dd34b09c9c25336a3d850d4c431455e1aaaf0.jpg?host=wbd-images.prod-vod.h264.io&partner=beamcom",
         "pas_origem": "EUA",
         "duracao": 169,
-        "id_diretor": "directors/2",
+        "id_diretor": "directors/2-A",
         "class_indicativo": "10",
         "exibicoes": exhibitions_interstellar
 
@@ -77,7 +95,7 @@ novos_filmes = [
         "poster_url": "https://i0.wp.com/ovicio.com.br/wp-content/uploads/2020/08/20200802-filme-a-origem.jpg",
         "pas_origem": "EUA",
         "duracao": 148,
-        "id_diretor": "directors/2",
+        "id_diretor": "directors/2-A",
         "class_indicativo": "12",
     },
     {
@@ -88,7 +106,7 @@ novos_filmes = [
         "poster_url": "https://rollingstone.com.br/media/uploads/carrie-anne_moss_e_keanu_reeves_em_matrix_foto_divulgacao.jpg",
         "pas_origem": "EUA",
         "duracao": 136,
-        "id_diretor": "directors/3",
+        "id_diretor": "directors/3-A",
         "class_indicativo": "16"
     },
     {
@@ -99,7 +117,7 @@ novos_filmes = [
         "poster_url": "https://diplomatique.org.br/wp-content/uploads/2020/01/filme-parasita.jpg",
         "pas_origem": "Coreia do Sul",
         "duracao": 132,
-        "id_diretor": "directors/4",
+        "id_diretor": "directors/4-A",
         "class_indicativo": "16"
     },
     {
@@ -110,7 +128,7 @@ novos_filmes = [
         "poster_url": "https://substackcdn.com/image/fetch/f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2Fb9c272e7-4e43-4b20-9407-de4e14638a34_1000x563.jpeg",
         "pas_origem": "EUA",
         "duracao": 175,
-        "id_diretor": "directors/5",
+        "id_diretor": "directors/5-A",
         "class_indicativo": "18"
     },
      {
@@ -121,7 +139,7 @@ novos_filmes = [
         "poster_url": "https://media.gazetadopovo.com.br/2022/04/15182712/usdl.jpg",
         "pas_origem": "EUA",
         "duracao": 142,
-        "id_diretor": "directors/6",
+        "id_diretor": "directors/6-A",
         "class_indicativo": "16"
     },
     {
@@ -132,10 +150,10 @@ novos_filmes = [
         "poster_url": "https://m.media-amazon.com/images/S/pv-target-images/c55624c14560ba8f1604fcb95f590d62889c476a78d0ccf6de60feda54237f6a._SX1080_FMjpg_.jpg",
         "pas_origem": "EUA",
         "duracao": 154,
-        "id_diretor": "directors/7",
+        "id_diretor": "directors/7-A",
         "class_indicativo": "18"
     },
-      {
+    {
         "titulo_original": "The Dark Knight",
         "titulo_brasil": "Batman: O Cavaleiro das Trevas",
         "sinopse": "Quando o Coringa emerge como uma nova ameaça, Batman deve aceitar um dos maiores testes psicológicos e físicos de sua capacidade de lutar contra a injustiça.",
@@ -143,8 +161,9 @@ novos_filmes = [
         "poster_url": "https://m.media-amazon.com/images/I/51k0qa6q0oL._AC_.jpg",
         "pas_origem": "EUA",
         "duracao": 152,
-        "id_diretor": "directors/2",
-        "class_indicativo": "12"
+        "id_diretor": "directors/2-A",
+        "class_indicativo": "12",
+        "exibicoes": exhibitions_The_Dark_Knight
     },
     {
         "titulo_original": "Forrest Gump",
@@ -154,7 +173,7 @@ novos_filmes = [
         "poster_url": "https://m.media-amazon.com/images/I/61Kc8oZ3aKL._AC_SY679_.jpg",
         "pas_origem": "EUA",
         "duracao": 142,
-        "id_diretor": "directors/8",
+        "id_diretor": "directors/8-A",
         "class_indicativo": "12"
     },
     {
@@ -165,8 +184,9 @@ novos_filmes = [
         "poster_url": "https://rollingstone.com.br/media/_versions/brad-pitt-edward-norton-clube-da-luta-reprod_widelg.jpg",
         "pas_origem": "EUA",
         "duracao": 139,
-        "id_diretor": "directors/9",
-        "class_indicativo": "18"
+        "id_diretor": "directors/9-A",
+        "class_indicativo": "18",
+        "exibicoes": exhibitions_clube_da_luta
     },
     {
         "titulo_original": "Inglourious Basterds",
@@ -176,7 +196,7 @@ novos_filmes = [
         "poster_url": "https://m.media-amazon.com/images/I/81tK5xXbQPL._AC_SY679_.jpg",
         "pas_origem": "DE",
         "duracao": 153,
-        "id_diretor": "directors/7",
+        "id_diretor": "directors/7-A",
         "class_indicativo": "18"
     },
      {
@@ -187,8 +207,9 @@ novos_filmes = [
         "poster_url": "https://cinemacao.com/wp-content/uploads/2018/01/Viva-A-Vida-E-Uma-Festa-2.jpg",
         "pas_origem": "EUA",
         "duracao": 105,
-        "id_diretor": "directors/10",
-        "class_indicativo": "Livre"
+        "id_diretor": "directors/10-A",
+        "class_indicativo": "Livre",
+        "exibicoes": exhibitions_coco
     },
     {
         "titulo_original": "Mad Max",
@@ -198,8 +219,9 @@ novos_filmes = [
         "poster_url": "https://m.media-amazon.com/images/I/71j5Zy9v4cL._AC_SY679_.jpg",
         "pas_origem": "Austrália",
         "duracao": 120,
-        "id_diretor": "directors/11",
-        "class_indicativo": "16"
+        "id_diretor": "directors/11-A",
+        "class_indicativo": "16",
+        "exibicoes": exhibitions_Mad_Max
     },
     {
         "titulo_original": "The Social Network",
@@ -209,7 +231,7 @@ novos_filmes = [
         "poster_url": "https://cptstatic.s3.amazonaws.com/imagens/enviadas/materias/materia13405/a-rede-social-cursos-cpt.jpg",
         "pas_origem": "EUA",
         "duracao": 120,
-        "id_diretor": "directors/9",
+        "id_diretor": "directors/9-A",
         "class_indicativo": "12"
     },
     {
@@ -220,7 +242,7 @@ novos_filmes = [
         "poster_url": "https://www.pjf.mg.gov.br/noticias/arquivo/18%2008%20Sessao%20Cidadao_175702.jpeg",
         "pas_origem": "HUN",
         "duracao": 120,
-        "id_diretor": "directors/12",
+        "id_diretor": "directors/12-A",
         "class_indicativo": "12"
     },
      {
@@ -231,8 +253,9 @@ novos_filmes = [
         "poster_url": "https://ogimg.infoglobo.com.br/in/22353040-c59-70e/FT1500A/690/image.jpg",
         "pas_origem": "EUA",
         "duracao": 120,
-        "id_diretor": "directors/13",
-        "class_indicativo": "16"
+        "id_diretor": "directors/13-A",
+        "class_indicativo": "16",
+        "exibicoes": exhibitions_shape_of_water
     },
     {
         "titulo_original": "The Revenant",
@@ -242,7 +265,7 @@ novos_filmes = [
         "poster_url": "https://blogdescalada.com/critica-do-filme-o-regresso/critica-o-regresso-6/",
         "pas_origem": "EUA",
         "duracao": 156,
-        "id_diretor": "directors/14",
+        "id_diretor": "directors/14-A",
         "class_indicativo": "16"
     },
     {
@@ -253,8 +276,7 @@ novos_filmes = [
     "poster_url": "https://cfnoticias.com.br/wp-content/uploads/2016/03/1-Zootopia-2.jpg",
     "pas_origem": "EUA",
     "duracao": 108,
-    "id_diretor": "directors/15",
+    "id_diretor": "directors/15-A",
     "class_indicativo": "Livre"
     },
 ]
-
