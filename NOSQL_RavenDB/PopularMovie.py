@@ -1,9 +1,5 @@
 from Ravendb import get_store
 
-
-# Defina a classe do filme
-from Ravendb import get_store
-
 class Film:
     def __init__(self, titulo_original, titulo_brasil, sinopse, ano_lancamento, poster_url, pas_origem, duracao, id_diretor, class_indicativo, exibicoes=None):
         self.titulo_original = titulo_original
@@ -284,4 +280,3 @@ novos_filmes = [
     "class_indicativo": "Livre"
     },
 ]
-
