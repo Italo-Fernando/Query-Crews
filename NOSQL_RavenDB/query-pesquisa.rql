@@ -1,0 +1,31 @@
+-- Agrupar filmes por diretor
+from Films as f
+group by f.id_diretor
+order by count() desc
+select {
+    QuantidadeFilmes: count(),
+    Diretor: load(f.id_diretor).nome_diretor
+}
+include f.id_diretor
+
+
+-- Listar filmes com o diretor
+from Films as F
+load F.id_diretor as d
+select {
+    Filme: F.titulo_brasil,
+    AnoLancamento: F.ano_lancamento,
+    Duracao: F.duracao,
+    Diretor: d.nome_diretor
+}
+
+
+-- Mostra filmes em exibição
+from Films as F
+where F.exibicoes.length > 0
+select {
+    Filme: F.titulo_brasil,
+    Exibicoes: F.exibicoes.map(x => 
+        load(x.num_canal).nome + ": " + x.data_exibicao
+    ).join(" | ")
+}
