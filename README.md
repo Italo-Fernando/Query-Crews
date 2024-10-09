@@ -15,7 +15,7 @@ Se você deseja contribuir com o projeto, siga estes passos:
 
 - Linguagens: Python.
 - Banco de dados relacional : (`MySQL`).
-- Banco de dados NoSQL : (`Supabase`).
+- Banco de dados NoSQL : (`RavenDB`).
 - Framework (`Sreamlit`).
 - PS: Todas as dependencias podem ser instaladas por meio do comando(`pip install -r requirements.txt`) .
 
